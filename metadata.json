@@ -1,0 +1,5 @@
+{
+  "name": "Chinese-Lao Translator",
+  "description": "A modern, responsive web application that translates text between Chinese and Lao using the Gemini API, featuring a clean and intuitive user interface.",
+  "requestFramePermissions": []
+}
