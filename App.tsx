@@ -156,6 +156,7 @@ function App() {
           explanation={wordExplanation}
           isLoading={isExplanationLoading}
           error={explanationError}
+          targetLang={targetLang}
       />
     </>
   );

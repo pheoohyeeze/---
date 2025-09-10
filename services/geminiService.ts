@@ -46,13 +46,15 @@ export async function getWordExplanation(
 ): Promise<WordExplanation> {
   try {
     const prompt = `You are a linguistic assistant helping a ${sourceLang} speaker learn ${targetLang}.
-    The user provided a source text and its translation.
-    Source Text (${sourceLang}): "${sourceText}"
-    Translated Text (${targetLang}): "${translatedText}"
+    The user provided the following context:
+    - Source Text (${sourceLang}): "${sourceText}"
+    - Translated Text (${targetLang}): "${translatedText}"
 
-    From the translated text, please analyze the word "${word}".
+    From the translated text, the user wants to understand the word: "${word}".
 
-    Provide a concise explanation for this word.`;
+    Please provide a concise analysis of this word.
+    
+    IMPORTANT: The 'partOfSpeech' and 'usage' values in your JSON response must be written entirely in ${targetLang}.`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -64,19 +66,19 @@ export async function getWordExplanation(
           properties: {
             partOfSpeech: {
               type: Type.STRING,
-              description: `The grammatical part of speech of the word "${word}" (e.g., Noun, Verb, Adjective).`,
+              description: `The grammatical part of speech for "${word}". This value MUST be in ${targetLang}.`,
             },
             usage: {
               type: Type.STRING,
-              description: `A brief explanation of how to use the word "${word}".`,
+              description: `A brief explanation of how to use the word "${word}". This value MUST be in ${targetLang}.`,
             },
             exampleSentence: {
               type: Type.STRING,
-              description: `A simple example sentence in ${targetLang} using the word "${word}".`,
+              description: `A simple example sentence in ${targetLang} that uses the word "${word}".`,
             },
             exampleTranslation: {
                 type: Type.STRING,
-                description: `The translation of the example sentence into ${sourceLang}.`,
+                description: `The translation of the example sentence back into ${sourceLang}.`,
             },
           },
           required: ["partOfSpeech", "usage", "exampleSentence", "exampleTranslation"],

@@ -1,5 +1,5 @@
 import React from 'react';
-import { WordExplanation } from '../types';
+import { Language, WordExplanation } from '../types';
 import { CloseIcon, LoaderIcon } from './Icons';
 
 interface WordExplanationModalProps {
@@ -9,6 +9,7 @@ interface WordExplanationModalProps {
   explanation: WordExplanation | null;
   isLoading: boolean;
   error: string | null;
+  targetLang: Language;
 }
 
 const WordExplanationModal: React.FC<WordExplanationModalProps> = ({
@@ -18,8 +19,25 @@ const WordExplanationModal: React.FC<WordExplanationModalProps> = ({
   explanation,
   isLoading,
   error,
+  targetLang,
 }) => {
   if (!isOpen) return null;
+
+  const labels = targetLang === 'Lao' ? {
+    title: 'ລາຍລະອຽດຄຳ:',
+    partOfSpeech: 'ປະເພດຂອງຄຳ',
+    usage: 'ການນໍາໃຊ້',
+    example: 'ຕົວຢ່າງ',
+    loading: 'ກຳລັງວິເຄາະຄຳ...',
+    errorTitle: 'ບໍ່ສາມາດໂຫຼດຄຳອະທິບາຍໄດ້',
+  } : {
+    title: '单词详情：',
+    partOfSpeech: '词性',
+    usage: '用法',
+    example: '示例',
+    loading: '正在分析单词...',
+    errorTitle: '无法加载解释',
+  };
 
   return (
     <div 
@@ -43,19 +61,19 @@ const WordExplanationModal: React.FC<WordExplanationModalProps> = ({
         </button>
 
         <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-6">
-          Word Details: <span className="text-cyan-300">{word}</span>
+          {labels.title} <span className="text-cyan-300">{word}</span>
         </h2>
 
         {isLoading && (
           <div className="flex flex-col items-center justify-center h-48">
             <LoaderIcon className="w-10 h-10 text-cyan-400" />
-            <p className="mt-4 text-slate-400">Analyzing word...</p>
+            <p className="mt-4 text-slate-400">{labels.loading}</p>
           </div>
         )}
 
         {error && !isLoading && (
           <div className="text-center text-red-400 bg-red-900/20 border border-red-500/30 p-4 rounded-lg">
-            <p className="font-semibold">Could not load explanation</p>
+            <p className="font-semibold">{labels.errorTitle}</p>
             <p className="text-sm mt-1">{error}</p>
           </div>
         )}
@@ -63,15 +81,15 @@ const WordExplanationModal: React.FC<WordExplanationModalProps> = ({
         {explanation && !isLoading && !error && (
           <div className="space-y-5 text-slate-300">
             <div>
-              <h3 className="font-semibold text-slate-400 text-sm uppercase tracking-wider">Part of Speech</h3>
+              <h3 className="font-semibold text-slate-400 text-sm uppercase tracking-wider">{labels.partOfSpeech}</h3>
               <p className="text-lg">{explanation.partOfSpeech}</p>
             </div>
             <div>
-              <h3 className="font-semibold text-slate-400 text-sm uppercase tracking-wider">Usage</h3>
+              <h3 className="font-semibold text-slate-400 text-sm uppercase tracking-wider">{labels.usage}</h3>
               <p>{explanation.usage}</p>
             </div>
             <div>
-              <h3 className="font-semibold text-slate-400 text-sm uppercase tracking-wider">Example</h3>
+              <h3 className="font-semibold text-slate-400 text-sm uppercase tracking-wider">{labels.example}</h3>
               <p className="text-lg">{explanation.exampleSentence}</p>
               <p className="text-slate-400 italic mt-1">"{explanation.exampleTranslation}"</p>
             </div>
